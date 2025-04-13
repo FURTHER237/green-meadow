@@ -108,6 +108,4 @@ def main():
         verify_task3_2()
         verify_task3_3()
 
-if __name__ == "__main__":
-    main()
 
