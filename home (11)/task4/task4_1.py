@@ -19,7 +19,7 @@ def task4_1():
         json.dump(age_group_counts, json_file, indent=4)
     yearly_counts = merged_df.groupby(['ACCIDENT_YEAR', 'VEHICLE_AGE_GROUP']).size().unstack(fill_value=0)
 
-    #yearly_counts.plot(kind='bar', stacked=True, figsize=(12, 6))
+   
     plt.figure(figsize=(12, 6))
     yearly_counts.plot(kind='bar', stacked=True)
     
