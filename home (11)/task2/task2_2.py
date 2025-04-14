@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from sklearn.featyre_extraction.text import CountVectorizer
 import string
 import nltk
-from nltk.corpus import stopwoeds
+from nltk.corpus import stopwords
 nltk.download('stopwords')
 
 
