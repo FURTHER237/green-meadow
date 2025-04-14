@@ -4,9 +4,8 @@ import matplotlib.pyplot as plt
 from collections import Counter
 import string
 import nltk 
-nltk.download('stopwords')
 from nltk.corpus import stopwords
-
+nltk.download('stopwords')
 def task2_1():
     df = pd.read_csv("../accident.csv")
     stop_words = set(stopwords.words('english'))
@@ -30,7 +29,7 @@ def task2_1():
     wordcloud.generate_from_frequencies(top_20_words)
     
     # Save the word cloud
-    plt.figure(figsize=(10, 5))
+    plt.figure(figsize=(20, 5))
     plt.imshow(wordcloud, interpolation='bilinear')
     plt.axis('off')
     plt.savefig('task2_1_word_cloud.png', dpi=300, bbox_inches='tight')
