@@ -1,9 +1,4 @@
 import pandas as pd
-
-def task4_1():
-    return
-
-import pandas as pd
 import json
 import matplotlib.pyplot as plt
 
@@ -24,13 +19,16 @@ def task4_1():
         json.dump(age_group_counts, json_file, indent=4)
     yearly_counts = merged_df.groupby(['ACCIDENT_YEAR', 'VEHICLE_AGE_GROUP']).size().unstack(fill_value=0)
 
-    yearly_counts.plot(kind='bar', stacked=True, figsize=(12, 6))
+    #yearly_counts.plot(kind='bar', stacked=True, figsize=(12, 6))
+    plt.figure(figsize=(12, 6))
+    yearly_counts.plot(kind='bar', stacked=True)
+    
     plt.title('Accidents by Vehicle Age Group Over the Years')
     plt.xlabel('Year')
     plt.ylabel('Number of Accidents')
     plt.legend(title='Vehicle Age Group')
     plt.tight_layout()
 
-    plt.savefig('task4_1_stackbar.png')
+    plt.savefig('task4_1_stackbar.png', dpi=300, bbox_inches='tight')
     plt.close()
-    return None
+    return 
