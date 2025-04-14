@@ -1,4 +1,4 @@
-import pands as pd
+import pandas as pd
 
 def task4_1():
     return
@@ -9,8 +9,8 @@ import matplotlib.pyplot as plt
 
 
 def task4_1():
-    vehicle_df = pd.read_csv('vehicle.csv')
-    accident_df = pd.read_csv('accident.csv')
+    vehicle_df = pd.read_csv('../vehicle.csv')
+    accident_df = pd.read_csv('../accident.csv')
 
     merged_df = pd.merge(vehicle_df, accident_df, on='VEHICLE_ID')
 
