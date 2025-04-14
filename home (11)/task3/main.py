@@ -91,6 +91,7 @@ def verify_task3_3():
 
 
 def main():
+    print("erere")
     args = sys.argv
     assert len(args) >= 2, "Please provide a task."
     task = args[1]
@@ -104,8 +105,12 @@ def main():
     elif task == "task3_3":
         verify_task3_3()
     elif task == "all":
+        print("erere")
         verify_task3_1()
         verify_task3_2()
         verify_task3_3()
+
+if __name__ == "__main__":
+    main()
 
 
