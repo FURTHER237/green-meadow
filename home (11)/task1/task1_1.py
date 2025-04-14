@@ -1,5 +1,7 @@
+import pandas as pd
+
 def task1_1():
-    df = pd.read_csv('/course/person.csv')
+    df = pd.read_csv('../person.csv')
     
     #input with most frequency number
     helmet_mode = df['HELMET_BELT_WORN'].mode()[0]
