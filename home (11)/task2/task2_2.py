@@ -1,7 +1,7 @@
 import pandas as pd
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
-from sklearn.featyre_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import CountVectorizer
 import string
 import nltk
 from nltk.corpus import stopwords
@@ -22,7 +22,7 @@ def time_accident(time):
     elif 0 <= hour < 6:
         return "Late Night"
     else:
-        return "Unkown"
+        return "Unknown"
         
 ## Clean and process text        
 def clean_text(text):
@@ -30,7 +30,7 @@ def clean_text(text):
         text.fillna("")
         .str.lower()
         .str.translate(str.maketrans('','',string.punctuation))
-        .apply(lambda x: ''.join([w for w in x.split() if w not in stop_words]))
+        .apply(lambda x: ' '.join([w for w in x.split() if w not in stop_words]))
 
     )
 
@@ -66,16 +66,15 @@ def task2_2():
         ax.set_title(time_period)
     
     plt.tight_layout()
-    plt.subplot_adiust(top=0.88)
+    plt.subplots_adjust(top=0.88)
     plt.savefig("task2_2_wordpies.png")
     plt.close()
 
     # create the stacked bar charts
     selected_days = ['Monday', 'Friday', 'Sunday']
-    filtered_df = df[df['DAY_NAME'].isin(selected_days)]
-
     df["ACCIDENT_DATE"] = pd.to_datetime(df["ACCIDENT_DATE"],errors = "coerce")
-    df["DAY_NAME"] = df[df["DAY_NAME"].isin(selected_days)]
+    filtered_df = df[df['DAY_NAME'].isin(selected_days)]
+    df["DAY_NAME"] = df[df["DAY_NAME"].dt.day_name()]
     pivot_table = pd.pivot_table(filtered_df, index='DAY_NAME', columns='TIME_OF_DAY',
                                  values='DCA_DESC', aggfunc='count').fillna(0)
 
@@ -88,5 +87,5 @@ def task2_2():
     plt.savefig("task2_2_stackbar.png")
     plt.close()
 
-
     return
+
