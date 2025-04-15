@@ -35,7 +35,7 @@ def clean_text(text):
     )
 
 def task2_2():
-    df = pd.read_csv("accident.csv")
+    df = pd.read_csv("../accident.csv")
     df['TIME_OF_DAY'] = df['ACCIDENT_TIME'].astype(str).apply(time_accident)
     # create a bar chart
     time_counts = df['TIME_OF_DAY'].value_counts()
