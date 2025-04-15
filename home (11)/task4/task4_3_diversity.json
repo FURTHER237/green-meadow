@@ -1,0 +1,14 @@
+{
+    "Manufacturers": [
+        "UNKN",
+        "ISUZU",
+        "MITSUB",
+        "HINO",
+        "MERC B"
+    ],
+    "UNKN": 67,
+    "ISUZU": 50,
+    "MITSUB": 50,
+    "HINO": 49,
+    "MERC B": 48
+}
