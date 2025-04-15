@@ -1,0 +1,72 @@
+{
+    "UNKN": [
+        {
+            "Vehicle Type": "SEDAN",
+            "Probability": 0.35
+        },
+        {
+            "Vehicle Type": "TRAM",
+            "Probability": 0.12
+        },
+        {
+            "Vehicle Type": "CYCLE",
+            "Probability": 0.09
+        }
+    ],
+    "ISUZU": [
+        {
+            "Vehicle Type": "VAN",
+            "Probability": 0.26
+        },
+        {
+            "Vehicle Type": "TRAY",
+            "Probability": 0.22
+        },
+        {
+            "Vehicle Type": "UTIL",
+            "Probability": 0.11
+        }
+    ],
+    "MITSUB": [
+        {
+            "Vehicle Type": "SEDAN",
+            "Probability": 0.41
+        },
+        {
+            "Vehicle Type": "WAGON",
+            "Probability": 0.2
+        },
+        {
+            "Vehicle Type": "DC UTE",
+            "Probability": 0.09
+        }
+    ],
+    "HINO": [
+        {
+            "Vehicle Type": "VAN",
+            "Probability": 0.31
+        },
+        {
+            "Vehicle Type": "TRAY",
+            "Probability": 0.25
+        },
+        {
+            "Vehicle Type": "TIPPER",
+            "Probability": 0.13
+        }
+    ],
+    "MERC B": [
+        {
+            "Vehicle Type": "SEDAN",
+            "Probability": 0.47
+        },
+        {
+            "Vehicle Type": "WAGON",
+            "Probability": 0.15
+        },
+        {
+            "Vehicle Type": "VAN",
+            "Probability": 0.12
+        }
+    ]
+}
