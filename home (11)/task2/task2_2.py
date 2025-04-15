@@ -11,18 +11,18 @@ stop_words = set(stopwords.words('english'))
 
 # classifies each accident's time of occurrence 
 def time_accident(time):
-    try:
-        hour = int(time.split(":")[0])
-        if 6 <= hour < 12:
-            return "Morning"
-        elif 12 <= hour < 18:
-            return "Afternoon"
-        elif 18 <= hour < 24:
-            return "Evening"
-        elif 0 <= hour < 6:
-            return "Late Night"
-        else:
-            return "Unkown"
+        
+    hour = int(time.split(":")[0])
+    if 6 <= hour < 12:
+        return "Morning"
+    elif 12 <= hour < 18:
+        return "Afternoon"
+    elif 18 <= hour < 24:
+        return "Evening"
+    elif 0 <= hour < 6:
+        return "Late Night"
+    else:
+        return "Unkown"
         
 ## Clean and process text        
 def clean_text(text):
@@ -71,9 +71,11 @@ def task2_2():
     plt.close()
 
     # create the stacked bar charts
-    df["ACCIDENT_DATE"] = pd.to_datetime(df["ACCIDENT_DATE"],errors = "coerce")
-    df["DAY_NAME"] = df[df["DAY_NAME"].isin(seclected_days)]
+    selected_days = ['Monday', 'Friday', 'Sunday']
+    filtered_df = df[df['DAY_NAME'].isin(selected_days)]
 
+    df["ACCIDENT_DATE"] = pd.to_datetime(df["ACCIDENT_DATE"],errors = "coerce")
+    df["DAY_NAME"] = df[df["DAY_NAME"].isin(selected_days)]
     pivot_table = pd.pivot_table(filtered_df, index='DAY_NAME', columns='TIME_OF_DAY',
                                  values='DCA_DESC', aggfunc='count').fillna(0)
 
