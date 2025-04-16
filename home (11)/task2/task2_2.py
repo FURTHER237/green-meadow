@@ -36,7 +36,7 @@ def clean_text(text):
     )
 
 def task2_2():
-    df = pd.read_csv("accident.csv")
+    df = pd.read_csv("../accident.csv")
     df['TIME_OF_DAY'] = df['ACCIDENT_TIME'].astype(str).apply(time_accident)
     # create a bar chart
     time_counts = df['TIME_OF_DAY'].value_counts()
@@ -73,7 +73,7 @@ def task2_2():
 
     # create the stacked bar charts
     df["ACCIDENT_DATE"] = pd.to_datetime(df["ACCIDENT_DATE"], errors='coerce')
-    df["DAY_NUME"] = df["ACCIDENT_DATE"].dt.dayofweek  # Monday = 0, Sunday = 6
+    df["DAY_NUM"] = df["ACCIDENT_DATE"].dt.dayofweek  # Monday = 0, Sunday = 6
     selected_days = [0, 4, 6]  # Monday, Friday, Sunday
     filtered_df = df[df["DAY_NUM"].isin(selected_days)]
     
@@ -106,5 +106,5 @@ def task2_2():
     plt.tight_layout()
     plt.savefig("task2_2_stackbar.png")
     plt.close()
-        return
+    return
 
