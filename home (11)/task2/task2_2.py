@@ -77,17 +77,34 @@ def task2_2():
     selected_days = [0, 4, 6]  # Monday, Friday, Sunday
     filtered_df = df[df["DAY_NUM"].isin(selected_days)]
     
-    pivot_table = pd.pivot_table(filtered_df, index='DAY_NAME', columns='TIME_OF_DAY',
-                                 values='DCA_DESC', aggfunc='count').fillna(0)
+    pivot_table = pd.pivot_table(
+    filtered_df,
+    index='DAY_NUM',
+    columns='TIME_OF_DAY',
+    values='DCA_DESC',
+    aggfunc='count'
+    ).fillna(0)
 
-    pivot_table = pivot_table[['Morning', 'Afternoon', 'Evening', 'Late Night']]  # Ensure consistent order
 
-    pivot_table.plot(kind='bar', stacked=True, figsize=(10, 6), colormap='tab20c')
-    plt.title("Accidents by Day and Time of Day")
+    expected_order = ['Morning', 'Afternoon', 'Evening', 'Late Night']
+    for col in expected_order:
+        if col not in pivot_table.columns:
+            pivot_table[col] = 0
+    pivot_table = pivot_table[expected_order]
+
+    pivot_table.index = pivot_table.index.map({0: "Monday", 4: "Friday", 6: "Sunday"})
+
+    pivot_table.plot(
+        kind='bar',
+        stacked=True,
+        figsize=(10, 6),
+        colormap='tab20c'
+    )
+    plt.title("Accidents by Day and Time of Day (Mon, Fri, Sun)")
     plt.ylabel("Number of Accidents")
+    plt.xlabel("Day of the Week")
     plt.tight_layout()
     plt.savefig("task2_2_stackbar.png")
     plt.close()
-
-    return
+        return
 
