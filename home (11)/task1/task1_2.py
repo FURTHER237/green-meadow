@@ -4,10 +4,10 @@ import matplotlib.pyplot as plt
 import re
 import numpy as np
 def task1_2():
-  
+    df = task1_1()
+ 
     df = task1_1()
 
-    # Map helmet values to strings
     sbelt_map = {
         1.0: "Seatbelt Worn",
         8.0: "Seatbelt Not Worn"
@@ -20,10 +20,12 @@ def task1_2():
     grouped = df_filtered.groupby(['AGE_GROUP', 'HELMET_BELT_WORN_LABEL']).size().unstack()
     print(grouped)
     
-    grouped.plot(kind='bar', figsize=(20,6))
+    ax = grouped.plot(kind='bar', figsize=(20,6))
     plt.title("Seatbelt Usage by Age Group")
     plt.xlabel("Age Group")
     plt.ylabel("Count")
+    for container in ax.containers:
+      ax.bar_label(container)
     plt.legend(title="Seatbelt Status")
     plt.tight_layout()
     plt.savefig("task1_2_age.png")
