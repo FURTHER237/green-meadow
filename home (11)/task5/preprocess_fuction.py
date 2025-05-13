@@ -5,7 +5,7 @@ from sklearn.preprocessing import LabelEncoder, OneHotEncoder
 def preprocess_data():
     # Load the datasets
     accident_df = pd.read_csv('../accident.csv')
-    vehicle_df = pd.read_csv('../vehicle.csv')
+    vehicle_df = pd.read_csv('../filtered_vehicle.csv')  # use filtered data is good enough
     person_df = pd.read_csv('../person.csv')
     
     # 1. Merge datasets using ACCIDENT_NO
