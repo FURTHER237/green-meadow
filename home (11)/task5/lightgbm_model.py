@@ -53,7 +53,7 @@ def train_lightgbm(X, y, test_size=0.2, random_state=42):
     plt.title('Confusion Matrix')
     plt.xlabel('Predicted')
     plt.ylabel('True')
-    plt.savefig("confusion_matrix.png", dpi=300, bbox_inches='tight')
+    plt.savefig("confusion_matrix_lgbm.png", dpi=300, bbox_inches='tight')
     plt.show()
 
     results = model.evals_result_
@@ -64,7 +64,7 @@ def train_lightgbm(X, y, test_size=0.2, random_state=42):
     plt.xlabel('Iteration')
     plt.ylabel('Log Loss')
     plt.legend()
-    plt.savefig("logloss_curve.png", dpi=300, bbox_inches='tight')
+    plt.savefig("logloss_curve_lgbm.png", dpi=300, bbox_inches='tight')
     plt.show()
 
     return model, report, acc, f1
