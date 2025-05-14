@@ -5,6 +5,7 @@ from lightgbm import early_stopping, log_evaluation
 from sklearn.metrics import accuracy_score, f1_score, confusion_matrix
 import matplotlib.pyplot as plt
 import seaborn as sns
+import pandas as pd
 
 
 
@@ -18,7 +19,6 @@ CATEGORICAL_FEATURES = [
     'TRAFFIC_CONTROL', 'ACCIDENT_TYPE', 'DAY_OF_WEEK',
     'LIGHT_CONDITION', 'POLICE_ATTEND', 'ROAD_GEOMETRY', 'RMA'
 ]
-
 
 def train_lightgbm(X, y, test_size=0.2, random_state=42):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=random_state)
@@ -36,9 +36,7 @@ def train_lightgbm(X, y, test_size=0.2, random_state=42):
     )
 
 
-
     y_pred = model.predict(X_test)
-
     acc = accuracy_score(y_test, y_pred)
     f1 = f1_score(y_test, y_pred, average='macro')
     report = classification_report(y_test, y_pred)
@@ -48,6 +46,7 @@ def train_lightgbm(X, y, test_size=0.2, random_state=42):
     print("F1 Score (macro):", f1)
     print("Classification Report:\n", report)
 
+
     plt.figure(figsize=(6, 5))
     sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
     plt.title('Confusion Matrix')
@@ -55,6 +54,7 @@ def train_lightgbm(X, y, test_size=0.2, random_state=42):
     plt.ylabel('True')
     plt.savefig("confusion_matrix_lgbm.png", dpi=300, bbox_inches='tight')
     plt.show()
+
 
     results = model.evals_result_
     plt.figure(figsize=(8, 4))
@@ -67,5 +67,19 @@ def train_lightgbm(X, y, test_size=0.2, random_state=42):
     plt.savefig("logloss_curve_lgbm.png", dpi=300, bbox_inches='tight')
     plt.show()
 
-    return model, report, acc, f1
 
+    importance_df = pd.DataFrame({
+        'feature': X.columns,
+        'importance': model.feature_importances_
+    }).sort_values(by='importance', ascending=False)
+
+    importance_df.to_csv(("../importance_lgbm.csv"))
+
+    plt.figure(figsize=(10, 6))
+    sns.barplot(data=importance_df.head(20), x='importance', y='feature')
+    plt.title("Top 20 Feature Importances (by Split Frequency)")
+    plt.tight_layout()
+    plt.savefig("feature_importance_lgbm.png", dpi=300)
+    plt.show()
+
+    return model, report, acc, f1
