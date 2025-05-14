@@ -6,7 +6,6 @@ from sklearn.metrics import accuracy_score, f1_score, confusion_matrix
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-<<<<<<< HEAD
 
 
 CATEGORICAL_FEATURES = [
@@ -68,13 +67,3 @@ def train_lightgbm(X, y, test_size=0.2, random_state=42):
 
     return model, report, acc, f1
 
-=======
-def train_lightgbm(X, y, categorical_features=None, test_size=0.2, random_state=42):
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=random_state)
-    model = lgb.LGBMClassifier(objective='multiclass', num_class=len(set(y)))
-    model.fit(X_train, y_train, categorical_feature=categorical_features)
-
-    y_pred = model.predict(X_test)
-    report = classification_report(y_test, y_pred)
-    return model, report
->>>>>>> parent of 15f038d (把merge后的数据转为csv了)
