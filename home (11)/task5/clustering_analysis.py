@@ -6,7 +6,6 @@ from sklearn.metrics import silhouette_score, calinski_harabasz_score
 from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 import seaborn as sns
-from datetime import datetime
 import folium
 from folium.plugins import HeatMap
 import warnings
@@ -79,14 +78,6 @@ class AccidentClustering:
                     X[col] = le.fit_transform(X[col].astype(str))
                     self.label_encoders[col] = le
         
-        # Handle missing values separately for numerical and categorical columns
-        for col in X.columns:
-            if col in categorical_cols:
-                # For categorical columns, fill with mode
-                X[col] = X[col].fillna(X[col].mode().iloc[0])
-            else:
-                # For numerical columns, fill with mean
-                X[col] = X[col].fillna(X[col].mean())
         
         # Scale numerical features
         X_scaled = self.scaler.fit_transform(X)
@@ -160,70 +151,110 @@ class AccidentClustering:
         print("\nCluster Characteristics:")
         print(cluster_analysis)
     
+    def plot_clusters_matplotlib(self, X, clusters, feature_names):
+        """Create a simple matplotlib plot of the clusters."""
+        # Reduce dimensions to 2D using PCA
+        pca = PCA(n_components=2)
+        X_pca = pca.fit_transform(X)
+        
+        # Create the plot
+        plt.figure(figsize=(10, 8))
+        scatter = plt.scatter(X_pca[:, 0], X_pca[:, 1], c=clusters, cmap='viridis', alpha=0.6)
+        
+        # Add labels and title
+        plt.title('Time and Location Pattern Clusters', fontsize=14)
+        plt.xlabel('Time Pattern Component (Light & Day)', fontsize=12)
+        plt.ylabel('Location Pattern Component (Speed & Road)', fontsize=12)
+        
+        # Add colorbar
+        plt.colorbar(scatter, label='Cluster')
+        
+        # Add grid
+        plt.grid(True, linestyle='--', alpha=0.7)
+        
+        # Save the plot
+        plt.savefig('time_location_clusters.png')
+        plt.close()
+        
+        # Print feature importance
+        print("\nFeature importance in PCA:")
+        for i, feature in enumerate(feature_names):
+            print(f"{feature}: {abs(pca.components_[0][i]):.3f}")
+
     def analyze_time_location_patterns(self):
         """Analyze time and location-based patterns."""
-        # Convert time features
-        self.data['Date'] = pd.to_datetime(self.data['Date'])
-        self.data['Hour'] = self.data['Date'].dt.hour
-        self.data['Day_of_Week'] = self.data['Date'].dt.dayofweek
+        print("analyzing time and location patterns")
+        print("preprocessing data")
         
-        features = ['Hour', 'Day_of_Week', 'Latitude', 'Longitude']
+        features = ['LIGHT_CONDITION', 'DAY_OF_WEEK', 'SPEED_ZONE', 'ROAD_GEOMETRY']
         X_scaled, X = self.preprocess_for_clustering(features)
         
         # Perform DBSCAN clustering
         clusters, dbscan = self.perform_dbscan(X_scaled, eps=0.3, min_samples=5)
         
-        # Create heatmap of accident hotspots
-        self.create_accident_heatmap(clusters)
+        # Create matplotlib plot
+        self.plot_clusters_matplotlib(X_scaled, clusters, features)
         
         # Analyze temporal patterns
         X['Cluster'] = clusters
         temporal_analysis = X.groupby('Cluster').agg({
-            'Hour': 'mean',
-            'Day_of_Week': 'mean'
-        }).round(2)
+            'LIGHT_CONDITION': 'mean',
+            'DAY_OF_WEEK': 'mean',
+            'SPEED_ZONE': 'mean',
+            'ROAD_GEOMETRY': 'mean'
+        }).round(1)
         print("\nTemporal Pattern Analysis:")
         print(temporal_analysis)
     
     def create_accident_heatmap(self, clusters):
         """Create a heatmap of accident locations."""
         # Create a map centered on the mean coordinates
-        m = folium.Map(location=[self.data['Latitude'].mean(), 
-                               self.data['Longitude'].mean()],
+        m = folium.Map(location=[self.data['SPEED_ZONE'].mean(), 
+                               self.data['ROAD_GEOMETRY'].mean()],
                       zoom_start=10)
         
         # Add heatmap layer
-        heat_data = [[row['Latitude'], row['Longitude']] 
+        heat_data = [[row['SPEED_ZONE'], row['ROAD_GEOMETRY']] 
                     for index, row in self.data.iterrows()]
         HeatMap(heat_data).add_to(m)
         
         # Save the map
         m.save('accident_hotspots.html')
     
-    def analyze_vehicle_crash_patterns(self):
-        """Analyze vehicle characteristics and crash patterns."""
-        features = ['Engine_Capacity_(CC)', 'Age_of_Vehicle', 'Vehicle_Type']
-        X_scaled, X = self.preprocess_for_clustering(features, 
-                                                   categorical_cols=['Vehicle_Type'])
+    def plot_clusters(self, X, clusters, feature_names, title):
+        """Plot clusters using PCA for dimensionality reduction."""
+        # Reduce dimensions to 2D using PCA
+        pca = PCA(n_components=2)
+        X_pca = pca.fit_transform(X)
         
-        # Perform K-means clustering
-        clusters, kmeans = self.perform_kmeans(X_scaled, n_clusters=3)
+        # Create scatter plot
+        plt.figure(figsize=(12, 8))
+        scatter = plt.scatter(X_pca[:, 0], X_pca[:, 1], c=clusters, cmap='viridis', alpha=0.6)
+        plt.title(f'Cluster Visualization - {title}', fontsize=14)
+        plt.xlabel('First Principal Component', fontsize=12)
+        plt.ylabel('Second Principal Component', fontsize=12)
+        plt.colorbar(scatter, label='Cluster')
         
-        # Evaluate and visualize
-        metrics = self.evaluate_clustering(X_scaled, clusters)
-        print("\nVehicle Crash Pattern Clustering Metrics:")
-        print(metrics)
+        # Add cluster centers
+        for cluster in np.unique(clusters):
+            if cluster != -1:  # Skip noise points
+                center = np.mean(X_pca[clusters == cluster], axis=0)
+                plt.scatter(center[0], center[1], c='red', marker='x', s=200, linewidths=3)
         
-        self.visualize_clusters(X_scaled, clusters, features, "Vehicle Crash Patterns")
+        plt.grid(True, linestyle='--', alpha=0.7)
+        plt.tight_layout()
+        plt.show()
         
-        # Analyze cluster characteristics
-        X['Cluster'] = clusters
-        cluster_analysis = X.groupby('Cluster').agg({
-            'Engine_Capacity_(CC)': 'mean',
-            'Age_of_Vehicle': 'mean'
-        }).round(2)
-        print("\nVehicle Cluster Characteristics:")
-        print(cluster_analysis)
+        # Print cluster sizes
+        cluster_sizes = pd.Series(clusters).value_counts().sort_index()
+        print(f"\nCluster sizes for {title}:")
+        print(cluster_sizes)
+        
+        # Print feature importance
+        print("\nFeature importance in PCA:")
+        for i, feature in enumerate(feature_names):
+            print(f"{feature}: {abs(pca.components_[0][i]):.3f}")
+
 
 def main():
     try:
@@ -237,13 +268,12 @@ def main():
         
         # Perform different clustering analyses
         print("\nPerforming Driver Risk Profile Analysis...")
-        clustering.analyze_driver_risk_profiles()
+        #clustering.analyze_driver_risk_profiles()
         
         print("\nPerforming Time and Location Pattern Analysis...")
         clustering.analyze_time_location_patterns()
         
-        print("\nPerforming Vehicle Crash Pattern Analysis...")
-        clustering.analyze_vehicle_crash_patterns()
+        
         
     except Exception as e:
         print(f"An error occurred: {str(e)}")
